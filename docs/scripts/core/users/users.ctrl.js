@@ -1,7 +1,6 @@
 "use strict";
 (function () {
 
-    var Routing = app.Routing;
     var UserService = app.Users.UsersSrv;
     var CommonControl = app.Common.CommonCtrl;
 
@@ -25,6 +24,8 @@
         deleteUser: deleteUser,
         closeForm: closeForm
     };
+
+    renderUsers();
 
     function renderUser(user, isCreate, usersList) {
         if (!usersList) {
@@ -64,11 +65,9 @@
     }
 
     function renderUsers() {
-
-        Routing.setUrl('/users');
-
-        document.querySelector('.users-link').style.textDecoration = 'underline';
-        document.querySelector('.companies-link').style.textDecoration = 'none';
+        //
+        //document.querySelector('.users-link').style.textDecoration = 'underline';
+        //document.querySelector('.companies-link').style.textDecoration = 'none';
         if (users.length === 0) {
             return
         }
@@ -86,7 +85,7 @@
                 userForm.setAttribute('data-user-id', 'undefined');
 
                 var addButton = userForm.querySelector(".button-add");
-                addButton.addEventListener("click", app.Common.CommonCtrl.addItemForm);
+                addButton.addEventListener("click", openUserForm);
 
                 var usersList = document.querySelector('.users-list');
 
@@ -105,7 +104,7 @@
 
         closeOldForm(users);
 
-        if (user.id === undefined) {
+        if (!user.id) {
             user = {firstName: "", lastName: "", mail: ""};
         }
 
@@ -136,8 +135,8 @@
 
         var user = this;
         var form = document.querySelector("[data-edit-user-form='" + user.id + "']").firstChild;
-        var isValidName = CommonControl.validateName.call(form.firstName);
-        var isValidEmail = CommonControl.validateMail.call(form.mail);
+        var isValidName = validateName.call(form.firstName);
+        var isValidEmail = validateMail.call(form.mail);
 
         if (isValidName && isValidEmail) {
             var userDTO = {
@@ -189,8 +188,8 @@
 
         saveButton.addEventListener("click", app.Users.UsersCtrl.saveUser.bind(user));
         closeButton.addEventListener("click", app.Users.UsersCtrl.closeForm.bind(user));
-        inputName.addEventListener("input", app.Common.CommonCtrl.validateName.bind(inputName));
-        inputMail.addEventListener("input", app.Common.CommonCtrl.validateMail.bind(inputMail));
+        inputName.addEventListener("input", validateName.bind(inputName));
+        inputMail.addEventListener("input", validateMail.bind(inputMail));
 
     }
 
@@ -209,5 +208,66 @@
             closeForm(oldUser);
         }
     }
+
+    function validateName() {
+
+        var nameInput = this;
+        var btnDisabled = document.querySelector('.button-save');
+        var parentElement = nameInput.parentElement;
+
+        var labelInput = parentElement.querySelector('.label');
+
+        if (!nameInput.value) {
+            CommonControl.addClass.call(parentElement);
+            labelInput.textContent = "First Name is required";
+            btnDisabled.disabled = true;
+            return false
+        }
+        if (nameInput.value.length < 3) {
+            CommonControl.addClass.call(parentElement);
+            labelInput.textContent = "First Name is too hort";
+            btnDisabled.disabled = true;
+            return false
+        }
+        if (nameInput.value.length > 20) {
+            CommonControl.addClass.call(parentElement);
+            labelInput.textContent = "First Name is too large";
+            btnDisabled.disabled = true;
+            return false
+        }
+
+        labelInput.textContent = "First Name";
+        CommonControl.removeClass.call(parentElement);
+        btnDisabled.disabled = false;
+        return true
+    }
+
+    function validateMail() {
+
+        var emailInput = this;
+        var btnDisabled = document.querySelector('.button-save');
+        var parentElement = emailInput.parentElement;
+        var labelInput = parentElement.querySelector('.label');
+
+        if (!emailInput.value) {
+            CommonControl.addClass.call(parentElement);
+            labelInput.textContent = "Email is required";
+            btnDisabled.disabled = true;
+            return false
+        }
+        if (!(/^\w+@\w+\.\w{2,4}$/).test(emailInput.value)) {
+            CommonControl.addClass.call(parentElement);
+            labelInput.textContent = "Incorrect email";
+            btnDisabled.disabled = true;
+            return false
+        }
+
+        labelInput.textContent = "Mail";
+        CommonControl.removeClass.call(parentElement);
+        btnDisabled.disabled = false;
+
+        return true
+    }
+
 
 }());

@@ -64,10 +64,10 @@
 
     function renderCompanies() {
 
-        Routing.setUrl('/companies');
 
-        document.querySelector('.companies-link').style.textDecoration = 'underline';
-        document.querySelector('.users-link').style.textDecoration = 'none';
+        //
+        //document.querySelector('.companies-link').style.textDecoration = 'underline';
+        //document.querySelector('.users-link').style.textDecoration = 'none';
         if (companies.length === 0) {
             return
         }
@@ -85,7 +85,7 @@
                 companyForm.setAttribute('data-company-id', 'undefined');
 
                 var addButton = companyForm.querySelector(".button-add");
-                addButton.addEventListener("click", app.Common.CommonCtrl.addItemForm);
+                addButton.addEventListener("click", openCompanyForm);
 
                 var companiesList = document.querySelector('.companies-list');
 
@@ -102,7 +102,7 @@
 
         var company = this;
 
-        if (company.id === undefined) {
+        if (!company.id) {
             company = {companyName: "", addressCompany: "", companyMail: ""};
         }
 
