@@ -2,7 +2,6 @@
 (function () {
 
     var CompanyService = app.Companies.CompaniesSrv;
-    var CommonControl = app.Common.CommonCtrl;
 
     var companies = CompanyService.getAllCompanies();
 
@@ -108,7 +107,7 @@
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:3000/app/scripts/core/companies/company-form.tpl.html', false);
+        xhr.open('GET', 'http://localhost:3000/app/scripts/core/companies/company-form.tpl.html', true);
 
         var companyForma = document.createElement('div');
         companyForma.className = " edit-company-form";
@@ -118,15 +117,15 @@
             if (xhr.readyState != 4) return;
             if (this.status === 200) {
                 companyForma.innerHTML = this.responseText;
+
+                var userElement = document.querySelector('[data-company-id=\'' + company.id + '\']');
+                userElement.className =  company.id ? 'edit-company' : 'new-company';
+                userElement.appendChild(companyForma);
+                form(company);
             }
         };
 
         xhr.send();
-
-        var userElement = document.querySelector('[data-company-id=\'' + company.id + '\']');
-        userElement.className =  company.id ? 'edit-company' : 'new-company';
-        userElement.appendChild(companyForma);
-        form(company);
     }
 
     function saveCompany(company) {
@@ -199,9 +198,9 @@
 
         if (form) {
             var oldUser = {companyName: "", addressCompany: "", companyMail: ""};
-            var oldForm = form.getAttribute('data-edit-company-form');
+            var oldFormId = form.getAttribute('data-edit-company-form');
             for (var i = 0; i < companies.length; i++) {
-                if (companies[i].id === oldForm) {
+                if (companies[i].id === oldFormId) {
                     oldUser = companies[i];
                 }
             }
@@ -219,31 +218,32 @@
         var labelInput = parentElement.querySelector('.label');
 
         if (!nameInput.value) {
-            CommonControl.addClass.call(parentElement);
+            parentElement.classList.add('has-error');
             labelInput.textContent = "Company Name is required";
             btnDisabled.disabled = true;
             return false
         }
         if (nameInput.value.length < 3) {
-            CommonControl.addClass.call(parentElement);
+            parentElement.classList.add('has-error');
             labelInput.textContent = "Company Name is too hort";
             btnDisabled.disabled = true;
             return false
         }
         if (nameInput.value.length > 20) {
-            CommonControl.addClass.call(parentElement);
+            parentElement.classList.add('has-error');
             labelInput.textContent = "Company Name is too large";
             btnDisabled.disabled = true;
             return false
         }
 
         labelInput.textContent = "Company Name";
-        CommonControl.removeClass.call(parentElement);
+        parentElement.classList.remove('has-error');
         btnDisabled.disabled = false;
         return true
     }
 
     function validateMail() {
+        var regExp = /^\w+@\w+\.\w{2,4}$/;
 
         var emailInput = this;
         var btnDisabled = document.querySelector('.button-save');
@@ -251,20 +251,20 @@
         var labelInput = parentElement.querySelector('.label');
 
         if (!emailInput.value) {
-            CommonControl.addClass.call(parentElement);
+            parentElement.classList.add('has-error');
             labelInput.textContent = "Email is required";
             btnDisabled.disabled = true;
             return false
         }
-        if (!(/^\w+@\w+\.\w{2,4}$/).test(emailInput.value)) {
-            CommonControl.addClass.call(parentElement);
+        if (!regExp.test(emailInput.value)) {
+            parentElement.classList.add('has-error');
             labelInput.textContent = "Incorrect email";
             btnDisabled.disabled = true;
             return false
         }
 
         labelInput.textContent = "Mail";
-        CommonControl.removeClass.call(parentElement);
+        parentElement.classList.remove('has-error');
         btnDisabled.disabled = false;
 
         return true
