@@ -19,17 +19,5 @@ var app;
         //    }
         //}
     };
-
-
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:3000/app/scripts/core/header/header-tpl.html', true);
-
-        xhr.onreadystatechange = function () {
-
-            if (xhr.readyState != 4) return;
-            if (this.status === 200) {
-                document.getElementById('header').innerHTML = this.responseText;
-            }
-        };
-        xhr.send();
+    
 }());

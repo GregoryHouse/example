@@ -1,7 +1,6 @@
 "use strict";
 (function () {
 
-    var Routing = app.Routing;
     var CompanyService = app.Companies.CompaniesSrv;
     var CommonControl = app.Common.CommonCtrl;
 
@@ -48,8 +47,8 @@
             var editButton = companyLi.querySelector(".button-edit");
             var deleteButton = companyLi.querySelector(".button-delete");
 
-            editButton.addEventListener("click", app.Companies.CompaniesCtrl.openCompanyForm.bind(company));
-            deleteButton.addEventListener("click", app.Companies.CompaniesCtrl.deleteCompany.bind(company));
+            editButton.addEventListener("click", openCompanyForm.bind(company));
+            deleteButton.addEventListener("click", deleteCompany.bind(company));
 
 
             return companyLi;
@@ -65,9 +64,6 @@
     function renderCompanies() {
 
 
-        //
-        //document.querySelector('.companies-link').style.textDecoration = 'underline';
-        //document.querySelector('.users-link').style.textDecoration = 'none';
         if (companies.length === 0) {
             return
         }
@@ -93,21 +89,26 @@
                     renderCompany(companies[i], true, companiesList);
                 }
 
+                document.querySelector('.companies-link').classList.add('underline');
+                document.querySelector('.users-link').classList.remove("underline");
             }
         };
         xhr.send();
+
     }
 
     function openCompanyForm() {
 
         var company = this;
 
+        closeOldForm(companies);
+
         if (!company.id) {
             company = {companyName: "", addressCompany: "", companyMail: ""};
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:3000/app/scripts/core/companies/company.form.tpl.html', false);
+        xhr.open('GET', 'http://localhost:3000/app/scripts/core/companies/company-form.tpl.html', false);
 
         var companyForma = document.createElement('div');
         companyForma.className = " edit-company-form";
@@ -133,8 +134,8 @@
         var company = this;
 
         var form = document.querySelector('[data-edit-company-form=\'' + company.id + '\']').firstChild;
-        var isValidName = CommonControl.validateName.call(form.companyName);
-        var isValidEmail = CommonControl.validateMail.call(form.companyMail);
+        var isValidName = validateName.call(form.companyName);
+        var isValidEmail = validateMail.call(form.companyMail);
 
         if (isValidName && isValidEmail) {
 
@@ -187,9 +188,86 @@
 
         saveButton.addEventListener("click", app.Companies.CompaniesCtrl.saveCompany.bind(company));
         closeButton.addEventListener("click", app.Companies.CompaniesCtrl.closeForm.bind(company));
-        inputName.addEventListener("input", app.Common.CommonCtrl.validateName.bind(inputName));
-        inputMail.addEventListener("input", app.Common.CommonCtrl.validateMail.bind(inputMail));
+        inputName.addEventListener("input", validateName.bind(inputName));
+        inputMail.addEventListener("input", validateMail.bind(inputMail));
 
+    }
+
+    function closeOldForm(companies) {
+
+        var form = document.querySelector('[data-edit-company-form]');
+
+        if (form) {
+            var oldUser = {companyName: "", addressCompany: "", companyMail: ""};
+            var oldForm = form.getAttribute('data-edit-company-form');
+            for (var i = 0; i < companies.length; i++) {
+                if (companies[i].id === oldForm) {
+                    oldUser = companies[i];
+                }
+            }
+            closeForm(oldUser);
+        }
+    }
+
+
+    function validateName() {
+
+        var nameInput = this;
+        var btnDisabled = document.querySelector('.button-save');
+        var parentElement = nameInput.parentElement;
+
+        var labelInput = parentElement.querySelector('.label');
+
+        if (!nameInput.value) {
+            CommonControl.addClass.call(parentElement);
+            labelInput.textContent = "Company Name is required";
+            btnDisabled.disabled = true;
+            return false
+        }
+        if (nameInput.value.length < 3) {
+            CommonControl.addClass.call(parentElement);
+            labelInput.textContent = "Company Name is too hort";
+            btnDisabled.disabled = true;
+            return false
+        }
+        if (nameInput.value.length > 20) {
+            CommonControl.addClass.call(parentElement);
+            labelInput.textContent = "Company Name is too large";
+            btnDisabled.disabled = true;
+            return false
+        }
+
+        labelInput.textContent = "Company Name";
+        CommonControl.removeClass.call(parentElement);
+        btnDisabled.disabled = false;
+        return true
+    }
+
+    function validateMail() {
+
+        var emailInput = this;
+        var btnDisabled = document.querySelector('.button-save');
+        var parentElement = emailInput.parentElement;
+        var labelInput = parentElement.querySelector('.label');
+
+        if (!emailInput.value) {
+            CommonControl.addClass.call(parentElement);
+            labelInput.textContent = "Email is required";
+            btnDisabled.disabled = true;
+            return false
+        }
+        if (!(/^\w+@\w+\.\w{2,4}$/).test(emailInput.value)) {
+            CommonControl.addClass.call(parentElement);
+            labelInput.textContent = "Incorrect email";
+            btnDisabled.disabled = true;
+            return false
+        }
+
+        labelInput.textContent = "Mail";
+        CommonControl.removeClass.call(parentElement);
+        btnDisabled.disabled = false;
+
+        return true
     }
 
 }());

@@ -49,8 +49,8 @@
             var editButton = userLi.querySelector(".button-edit");
             var deleteButton = userLi.querySelector(".button-delete");
 
-            editButton.addEventListener("click", app.Users.UsersCtrl.openUserForm.bind(user));
-            deleteButton.addEventListener("click", app.Users.UsersCtrl.deleteUser.bind(user));
+            editButton.addEventListener("click", openUserForm.bind(user));
+            deleteButton.addEventListener("click", deleteUser.bind(user));
 
 
             return userLi;
@@ -65,9 +65,9 @@
     }
 
     function renderUsers() {
-        //
-        //document.querySelector('.users-link').style.textDecoration = 'underline';
-        //document.querySelector('.companies-link').style.textDecoration = 'none';
+
+
+
         if (users.length === 0) {
             return
         }
@@ -93,6 +93,9 @@
                     renderUser(users[i], true, usersList);
                 }
 
+                document.querySelector('.users-link').classList.add('underline');
+                document.querySelector('.companies-link').classList.remove("underline");
+
             }
         };
         xhr.send();
@@ -109,7 +112,7 @@
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:3000/app/scripts/core/users/user.form.tpl.html', false);
+        xhr.open('GET', 'http://localhost:3000/app/scripts/core/users/user-form.tpl.html', false);
 
         var userForma = document.createElement('div');
         userForma.className = " edit-user-form";
