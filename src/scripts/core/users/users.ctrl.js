@@ -72,7 +72,7 @@
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:3000/app/scripts/core/users/users.tpl.html', true);
+        xhr.open('GET', '/scripts/core/users/users.tpl.html', true);
 
         xhr.onreadystatechange = function () {
 
@@ -111,7 +111,7 @@
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:3000/app/scripts/core/users/user-form.tpl.html', true);
+        xhr.open('GET', '/scripts/core/users/user-form.tpl.html', true);
 
         var userForma = document.createElement('div');
         userForma.className = " edit-user-form";

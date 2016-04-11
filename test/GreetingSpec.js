@@ -5,7 +5,7 @@
 
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
-import Greeting from '../src/Greeting';
+import Greeting from '../babel-config/Greeting';
 
 describe('Greeting', () => {
 

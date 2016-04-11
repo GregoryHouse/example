@@ -12,7 +12,7 @@ import { rootDir } from './config';
 browserSync({
   notify: false,
   server: {
-    baseDir: 'docs',
+    baseDir: 'src',
     startPath: rootDir,
     middleware: [async (req, res, next) => {
       if (req.url.startsWith('/socket.io')) {
@@ -66,7 +66,7 @@ browserSync({
 });
 
 // Watch for modifications
-gaze('docs/**', (err, watcher) => {
+gaze('src/**', (err, watcher) => {
   if (err) {
     console.log(err);
   }

@@ -68,7 +68,7 @@
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:3000/app/scripts/core/companies/companies.tpl.html', true);
+        xhr.open('GET', '/scripts/core/companies/companies.tpl.html', true);
 
         xhr.onreadystatechange = function () {
 
@@ -107,7 +107,7 @@
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://localhost:3000/app/scripts/core/companies/company-form.tpl.html', true);
+        xhr.open('GET', '/scripts/core/companies/company-form.tpl.html', true);
 
         var companyForma = document.createElement('div');
         companyForma.className = " edit-company-form";
